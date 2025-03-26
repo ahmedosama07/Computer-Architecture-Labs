@@ -25,8 +25,10 @@ begin
     begin
         if rising_edge(clk) then
             if RegWrite = '1' then
-                -- Write data to the specified register
-                reg_array(to_integer(unsigned(write_reg))) <= write_data;
+                -- Write data to the specified register, unless it's register 0 ($zero)
+                if write_reg /= "00000" then  -- MIPS: Prevent writes to $zero
+                    reg_array(to_integer(unsigned(write_reg))) <= write_data;
+                end if;
             end if;
         end if;
     end process;
