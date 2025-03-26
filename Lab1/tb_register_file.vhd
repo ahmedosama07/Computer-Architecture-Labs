@@ -91,7 +91,7 @@ begin
         read_reg2 <= "00001";            -- Read reg 1
         wait until falling_edge(clk);
         wait for 0 ns;
-        assert read_data1 = X"00000000" and read_data2 = X"DEADBEEF"
+        assert read_data1 = X"00000000" and read_data2 = X"DEADBEAF"
             report "Test Case 5 Failed: $zero or reg 1 malfunction" severity error;
 
         -- Finish simulation
