@@ -25,8 +25,10 @@ begin
     begin
         if rising_edge(clk) then
             if RegWrite = '1' then
-                -- Write data to the specified register
-                reg_array(to_integer(unsigned(write_reg))) <= write_data;
+                -- Write data to the specified register, unless it's register 0 ($zero)
+                if write_reg /= "00000" then  -- MIPS: Prevent writes to $zero
+                    reg_array(to_integer(unsigned(write_reg))) <= write_data;
+                end if;
             end if;
         end if;
     end process;
@@ -35,9 +37,19 @@ begin
     process(clk)
     begin
         if falling_edge(clk) then
-            -- Read data from the specified registers
-            read_data1 <= reg_array(to_integer(unsigned(read_reg1)));
-            read_data2 <= reg_array(to_integer(unsigned(read_reg2)));
+            -- Read data from the specified registers with $zero handling
+            -- MIPS: $zero is hardwired to 0, so we check if the register address is 0
+            -- and output 0 if it is, otherwise output the register's data
+            if read_reg1 = "00000" then
+                read_data1 <= (others => '0');  -- Hardwire $zero
+            else
+                read_data1 <= reg_array(to_integer(unsigned(read_reg1)));
+            end if;
+            if read_reg2 = "00000" then
+                read_data2 <= (others => '0');  -- Hardwire $zero
+            else
+                read_data2 <= reg_array(to_integer(unsigned(read_reg2)));
+            end if;
         end if;
     end process;
 end Behavioral;

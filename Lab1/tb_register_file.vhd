@@ -35,7 +35,7 @@ begin
     clk_process: process
     begin
         -- Generate a clock signal with a 50% duty cycle
-        while now < CLK_PERIOD * 5 loop
+        while now < CLK_PERIOD * 6 loop
             clk <= '0';
             wait for CLK_PERIOD / 2;
             clk <= '1';
@@ -47,7 +47,7 @@ begin
     -- Stimulus process: Defines test cases to verify the functionality of the register file
     stim_proc: process
     begin
-        -- Test Case 1: Write to register 5 and read in the same cycle
+        -- Test Case 1: Write to register 5 and verify read
         RegWrite <= '1';                -- Enable writing
         write_reg <= "00101";           -- Write to register 5
         write_data <= X"12345678";      -- Data to write
@@ -56,7 +56,7 @@ begin
         wait until falling_edge(clk);   -- Wait for falling edge of the clock
         wait for 0 ns;                  -- Allow signals to update
         assert read_data1 = X"12345678" and read_data2 = X"12345678"
-            report "Test Case 1 Failed" severity error;
+            report "Test Case 1 Failed: Write/read mismatch for reg 5" severity error;
 
         -- Test Case 2: Attempt to write with RegWrite=0 (no write should occur)
         RegWrite <= '0';                -- Disable writing
@@ -64,25 +64,35 @@ begin
         wait until falling_edge(clk);
         wait for 0 ns;
         assert read_data1 = X"12345678" and read_data2 = X"12345678"
-            report "Test Case 2 Failed" severity error;
+            report "Test Case 2 Failed: Unintended write during RegWrite=0" severity error;
 
-        -- Test Case 3: Read different registers (0 and 1, initialized to 0)
+        -- Test Case 3: Verify initial state of registers 0 and 1 (both should be 0)
         read_reg1 <= "00000";           -- Read from register 0
         read_reg2 <= "00001";           -- Read from register 1
         wait until falling_edge(clk);
         wait for 0 ns;
         assert read_data1 = X"00000000" and read_data2 = X"00000000"
-            report "Test Case 3 Failed" severity error;
+            report "Test Case 3 Failed: Registers not initialized to 0" severity error;
 
-        -- Test Case 4: Write to register 0
+        -- Test Case 4: Verify $zero is read-only and always returns 0
         RegWrite <= '1';                -- Enable writing
         write_reg <= "00000";           -- Write to register 0
         write_data <= X"BEEEEEEB";      -- Data to write
         read_reg1 <= "00000";           -- Read from register 0
         wait until falling_edge(clk);
         wait for 0 ns;
-        assert read_data1 = X"BEEEEEEB"
-            report "Test Case 4 Failed" severity error;
+        assert read_data1 = X"00000000"
+            report "Test Case 4 Failed: $zero modified by write" severity error;
+
+        -- Test Case 5: Verify $zero works alongside other registers
+        write_reg <= "00001";            -- Write to reg 1
+        write_data <= X"DEADBEAF";
+        read_reg1 <= "00000";            -- Read $zero
+        read_reg2 <= "00001";            -- Read reg 1
+        wait until falling_edge(clk);
+        wait for 0 ns;
+        assert read_data1 = X"00000000" and read_data2 = X"DEADBEAF"
+            report "Test Case 5 Failed: $zero or reg 1 malfunction" severity error;
 
         -- Finish simulation
         REPORT "Simulation completed."; -- Indicate simulation completion
