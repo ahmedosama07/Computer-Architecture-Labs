@@ -26,8 +26,9 @@ The tools required depend on the specific lab. Common tools include:
 
 2. **GPU Performance Lab (Lab3)**:
    - Python 3.x + Jupyter
-   - PyCUDA + CUDA Toolkit
-   - NVIDIA GPU with compute capability 3.0+
+   - PyCUDA + CUDA Toolkit (minimum version 11.0)
+   - NVIDIA GPU with compute capability 3.0+ (e.g., GTX 600 series or newer)
+   - Compatible NVIDIA drivers (minimum version 450.80)
 
 ## Directory Structure
 
