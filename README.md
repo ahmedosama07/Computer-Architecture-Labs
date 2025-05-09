@@ -20,23 +20,28 @@ Each lab is organized into its own directory and includes the following:
 
 The tools required depend on the specific lab. Common tools include:
 
-1. **GHDL**: A VHDL simulator for compiling and running VHDL code.
-2. **GTKWave**: A waveform viewer for analyzing simulation results.
+1. **VHDL Labs (Lab1)**:
+   - GHDL (VHDL simulator)
+   - GTKWave (Waveform viewer)
+
+2. **GPU Performance Lab (Lab3)**:
+   - Python 3.x + Jupyter
+   - PyCUDA + CUDA Toolkit
+   - NVIDIA GPU with compute capability 3.0+
 
 ## Directory Structure
 
 ```
 Labs/
-├── Lab1/
-│   ├── register_file.vhd       # Implementation file (e.g., VHDL)
+├── Lab1/                       # Register file implementation
+│   ├── register_file.vhd       # Implementation file
 │   ├── tb_register_file.vhd    # Testbench for the implementation
 │   ├── run_simulation.sh       # Script to automate simulation and waveform viewing
 │   ├── README.md               # Documentation for Lab1
 │   └── build/                  # Directory for generated files (created automatically)
-├── Lab2/
-│   ├── implementation.py       # Example of a Python implementation
-│   ├── test_cases.py           # Test cases for the implementation
-│   ├── README.md               # Documentation for Lab2
-├── .gitignore                  # Git ignore rules for the repository
-└── README.md                   # General documentation for the labs
+├── Lab3/                       # GPU vs CPU performance comparison
+│ ├── GPU_lab.ipynb             # CUDA/Python analysis notebook
+│ └── README.md                 # Documentation for Lab3
+│
+└── README.md # Main documentation
 ```
