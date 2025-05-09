@@ -40,3 +40,6 @@ Thumbs.db
 
 # Jupyter Notebook checkpoints
 *.ipynb_checkpoints/
+
+# Image files
+*.png
